@@ -3,8 +3,7 @@ let clickPower = 1;
 let inventory = [];
 
 const clickerButton = document.querySelector(".clicker");
-const textField = document.querySelector(".clickcount");
-
+const clickCounter = document.querySelector(".clickcount");
 const inventoryList = document.querySelector(".inventory");
 
 let powerups = [
@@ -34,38 +33,39 @@ function generatePowerups() {
   let powerUpStore = document.querySelector(".powerup-store");
   powerups.forEach((powerup) => {
     let newDiv = document.createElement("div");
-    let heading = document.createElement("h2");
-    heading.innerHTML = powerup.id;
-    newDiv.append(heading);
-    let description = document.createElement("p");
-    description.innerHTML = powerup.multiplier + "x click power, " + " costs " + powerup.price + " clicks";
-    newDiv.append(description);
-    let button = document.createElement("button");
-    button.addEventListener("click", handleBuy);
-    button.innerHTML = "Buy!";
-    newDiv.append(button);
-    button.setAttribute("data-item", powerup.id);
+      let heading = document.createElement("h2");
+        heading.innerHTML = powerup.id;
+      newDiv.append(heading);
+      let description = document.createElement("p");
+        description.innerHTML = powerup.multiplier + "x click power, " + " costs " + powerup.price + " clicks";
+      newDiv.append(description);
+      let button = document.createElement("button");
+        button.addEventListener("click", handleBuy);
+        button.innerHTML = "Buy!";
+        button.setAttribute("data-item", powerup.id);
+      newDiv.append(button);
     powerUpStore.append(newDiv);
   });
 }
 
 function handleBuy(event) {
+  // Get the "data-item" attribute from the button we clicked on and store it in theThingWeClickedOn:
   let theThingWeClickedOn = event.target.getAttribute("data-item");
-  powerups.forEach((powerup) => {
-    if (powerup.id === theThingWeClickedOn) {
-      if (clicked >= powerup.price) {
-        clicked -= powerup.price;
-        clickPower += powerup.multiplier;
-        inventory.push(powerup.id);
-        event.target.disabled = true;
-        updateInventory();
-      }
-    }
-  })
+  // Use theThingWeClickedOn to find the correct object in the powerup array:
+  let thingToBuy = powerups.find(powerup => powerup.id === theThingWeClickedOn);
+
+  // Now that we have the correct thing, we can check if we have enough clicks to buy it:
+  if (clicked >= thingToBuy.price) {
+    clicked -= thingToBuy.price;
+    clickPower *= thingToBuy.multiplier;
+    inventory.push(thingToBuy.id);
+    event.target.disabled = true;
+    updateInventory();
+  }
 }
 
 function updateInventory() {
-  textField.innerHTML = clicked;
+  clickCounter.innerHTML = clicked;
   inventoryList.innerHTML = "";
   inventory.forEach((item) => {
     let newItem = document.createElement("li");
