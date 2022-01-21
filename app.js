@@ -1,6 +1,6 @@
-let clicked = 0;
-let clickPower = 1;
-let inventory = [];
+let clicked = localStorage.getItem("state.clicked") || 0;
+let clickPower = localStorage.getItem("state.clickPower") || 1;
+let inventory = JSON.parse(localStorage.getItem("state.inventory")) || [];
 
 const clickerButton = document.querySelector(".clicker");
 const clickCounter = document.querySelector(".clickcount");
@@ -22,6 +22,11 @@ let powerups = [
     price: 1000,
     multiplier: 10  
   },
+  {
+    id: "Brand New Powerup",
+    price: 65,
+    multiplier: 7
+  }
 ];
 
 clickerButton.addEventListener("click", () => {
@@ -72,6 +77,18 @@ function updateInventory() {
     newItem.innerHTML = item;
     inventoryList.append(newItem);
   });
+  saveState();
+}
+
+
+function saveState() {
+  localStorage.setItem("state.clicked", clicked);
+  localStorage.setItem("state.clickPower", clickPower);
+  localStorage.setItem("state.inventory", JSON.stringify(inventory));
+}
+
+function resetState() {
+  localStorage.clear();
 }
 
 generatePowerups();
